@@ -1,3 +1,7 @@
+# project specific
+data/images
+data/images_sample
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
