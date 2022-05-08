@@ -1,5 +1,5 @@
 # Content-based image search
-This is a simple project that implements a content-based image search engine using PostgreSQL as storage backend and Python for the application logic.
+This is a simple project that implements a content-based image retrieval engine using PostgreSQL as storage backend and Python for the application logic.
 
 ## Dataset
 You can find the original (Oxford-IIIT Pet Dataset) dataset used in this project in the following [link](https://www.robots.ox.ac.uk/~vgg/data/pets/). This dataset consists of roughly 7000 dog and cat images annotated in different breeds.

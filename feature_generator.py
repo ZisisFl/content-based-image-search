@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import pickle
+from os import path
 from matplotlib import pyplot as plt
 from images_sampling import take_image_files_sample
 
@@ -8,11 +9,13 @@ from images_sampling import take_image_files_sample
 class PetImage:
     
     def __init__(self, filename) -> None:
-        self.feature_vector = self.extract_feature_vector(filename)
+        self.image_in_opencv_format = cv2.imread(filename)
+        self.feature_vector = self.extract_feature_vector(self.image_in_opencv_format)
         self.family = self.extract_pet_family(filename)
         self.breed = self.extract_pet_breed(filename)
-        self.filename = filename
-    
+        self.filename = path.split(filename)[1]
+        self.path_to_images_folder = path.split(filename)[0]
+        
 
     def encode_feature_vector(self):
         self.feature_vector = pickle.dumps(self.feature_vector)
@@ -30,13 +33,14 @@ class PetImage:
 
         return pet_family
     
+    
     def extract_pet_breed(self, image_filename):
         return '_'.join(image_filename.lower().split('/')[-1].split('_')[:-1])
     
 
-    def extract_feature_vector(self, image_filename, vector_size=32):
+    def extract_feature_vector(self, image, vector_size=32):
         # TODO images like data/images/Egyptian_Mau_177.jpg fail to load
-        image = cv2.imread(image_filename, 0)
+        # or are corrupted like chihuahua_121.jpg
 
         try:
             alg = cv2.SIFT_create()
@@ -75,8 +79,7 @@ class PetImage:
     
 
     def show_image(self):
-        image = cv2.imread(self.filename)
-        plt.imshow(image)
+        plt.imshow(self.image_in_opencv_format)
         plt.show()
 
 
