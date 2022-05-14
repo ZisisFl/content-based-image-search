@@ -1,4 +1,5 @@
 import pickle
+import argparse
 from dotenv import load_dotenv
 from os import getenv
 from sqlalchemy import create_engine, MetaData, Table, Column, insert
@@ -9,7 +10,10 @@ from feature_generator import create_pet_images_batch
 
 
 class PostgresHandler:
-    """
+    """ Handler for connection with PostgreSQL backend database
+
+    This class provides methods to ingest images in the database 
+    and retrieve them in the form of pandas dataframes
     """
 
     def __init__(self) -> None:
@@ -53,14 +57,27 @@ class PostgresHandler:
     def ingest_images(self):
         # create batch of pet images to store in database
         pet_images = create_pet_images_batch()
+
+        insert_statement = insert(self.target_table).values(pet_images)
         
         try:
-            print('Ingesting pet images in table')
-            self.engine.execute(insert(self.target_table).values(pet_images))
+            print(f'Ingesting {len(pet_images)} image records in pet_images table')
+            self.engine.execute(insert_statement)
         except Exception as e:
             raise e
         
         print('Ingested pet images in table successfully')
+    
+
+    def delete_images(self):
+        delete_statement = self.target_table.delete()
+
+        try:
+            self.engine.execute(delete_statement)
+        except Exception as e:
+            raise e
+        
+        print('Deleted all records of pet_images table successfully')
     
 
     def retrieve_images(self):
@@ -78,13 +95,42 @@ class PostgresHandler:
         return df
 
 
-if __name__=='__main__':
-    # initialize connection to postgresql with db handler
+def parse_command_line_arguments():
+    parser = argparse.ArgumentParser(
+        description='Content-based image search Database handler CLI',
+        add_help=True)
+
+    parser.add_argument(
+        '--action', 
+        help='''Create, ingest records in or delete records from pet_images table in PostgreSQL database''', 
+        type=str, 
+        choices=['create', 'ingest', 'delete'], 
+        required=True)
+
+    return parser.parse_args()
+
+
+def main():
+    args = parse_command_line_arguments()
+
     postgres_db_handler = PostgresHandler()
+    
+    if args.action == 'create':
+        postgres_db_handler.create_images_table()
+    elif args.action == 'ingest':
+        postgres_db_handler.ingest_images()
+    elif args.action == 'delete':
+        postgres_db_handler.delete_images()
 
-    # create instance of pet images target table
-    # if table doesn't exist in database it will create it
-    postgres_db_handler.create_images_table()
 
-    # ingest sample of images in the database
-    postgres_db_handler.ingest_images()
+if __name__=='__main__':
+    # # initialize connection to postgresql with db handler
+    # postgres_db_handler = PostgresHandler()
+
+    # # create instance of pet images target table
+    # # if table doesn't exist in database it will create it
+    # postgres_db_handler.create_images_table()
+
+    # # ingest sample of images in the database
+    # postgres_db_handler.ingest_images()
+    main()

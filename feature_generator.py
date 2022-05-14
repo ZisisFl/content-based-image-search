@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import pickle
+from tqdm import tqdm
 from os import path
 from matplotlib import pyplot as plt
 from images_sampling import take_image_files_sample
@@ -39,9 +40,6 @@ class PetImage:
     
 
     def extract_feature_vector(self, image, vector_size=32):
-        # TODO images like data/images/Egyptian_Mau_177.jpg fail to load
-        # or are corrupted like chihuahua_121.jpg
-
         try:
             alg = cv2.SIFT_create()
             # Dinding image keypoints
@@ -64,8 +62,8 @@ class PetImage:
                 # if we have less the 32 descriptors then just adding zeros at the
                 # end of our feature vector
                 dsc = np.concatenate([dsc, np.zeros(needed_size - dsc.size)])
-        except cv2.error as e:
-            print(f'Error: {e}')
+        except Exception as e:
+            print(f'Could not extract features from image due to error: {e}')
             return None
 
         return dsc
@@ -91,17 +89,21 @@ def create_pet_images_batch():
 
     pet_images = []
 
-    for pet_image_file in pet_image_files:
-        print(pet_image_file)
+    print('Start processing batch of images')
+    for pet_image_file in tqdm(pet_image_files):
         pet_image = PetImage(pet_image_file)
 
-        pet_image.encode_feature_vector()
+        # for some images it may not be possible to extract feature vectors
+        # these images will be discarded from the batch
+        if pet_image.feature_vector is not None:
+            pet_image.encode_feature_vector()
 
-        pet_images.append(pet_image.to_dict())
+            pet_images.append(pet_image.to_dict())
     
     return pet_images
 
 
 if __name__=='__main__':
     pet_images = create_pet_images_batch()
-    print(pet_images)
+
+    print(f'Processed {len(pet_images)} pet images')

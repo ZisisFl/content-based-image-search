@@ -19,7 +19,7 @@ def take_image_files_sample(n=500, pet_family='dog'):
         raise ValueError('Wrong pet_family input. It can be either dog or cat')
 
     # get a sample of n image files
-    return random.sample(filtered_image_files, n)
+    return random.sample(filtered_image_files, min(n, len(filtered_image_files)))
 
 if __name__=='__main__':
     print(take_image_files_sample(pet_family='cat'))

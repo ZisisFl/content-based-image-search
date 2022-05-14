@@ -2,7 +2,7 @@
 This is a simple project that implements a content-based image retrieval engine using PostgreSQL as storage backend and Python for the application logic.
 
 ## Dataset
-You can find the original (Oxford-IIIT Pet Dataset) dataset used in this project in the following [link](https://www.robots.ox.ac.uk/~vgg/data/pets/). This dataset consists of roughly 7000 dog and cat images annotated in different breeds.
+You can find the original (Oxford-IIIT Pet Dataset) dataset used in this project in the following [link](https://www.robots.ox.ac.uk/~vgg/data/pets/). This dataset consists of roughly 7000 dog and cat images annotated with their respective breeds.
 
 ## Requirments
 ### Python 
@@ -20,7 +20,7 @@ pip install -r requirements.txt
 ```
 
 ### PostgreSQL
-In order to use this application you need to set up a connection with a PostgreSQL database to create and populate a table named pet_images records.
+In order to use this application you need to set up a connection with a PostgreSQL database to create and populate a table named `pet_images`.
 To set up connection with PostgreSQL you need to create a .env file with the following format.
 
 ```sh
@@ -29,4 +29,32 @@ DB_PORT=5432
 DB_NAME=image_search
 DB_USER=postgres
 DB_SECRET=postgres
+```
+
+## Use the Application
+Follow the steps described in the next sections to setup and start the application.
+### Setting up dataset of images
+1. Download dataset of images using this [link](https://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz) (clicking the link will start the downloading of a GZ file named images.tar.gz containing `images` folder).
+2. Unzip the images.tar.gz file to extract images folder
+3. Place images folder under data directory of the project
+
+### Setting up PostgreSQL database
+
+1. Execute the following command to create `pet_images` table that will host links to pet image files metadata and feature vectors:
+    ```python
+    python db.py --action=create
+    ```
+2. Execute the following command to ingest a sample of roughly 250 cat and 250 dog image records in `pet_images` table of PostgreSQL database. Images are randomly selected using take_image_files_sample from image_sampling.py module
+    ```python
+    python db.py --action=ingest
+    ```
+    
+[Optional] Execute the following command to delete any image records in `pet_images` table:
+```python
+python db.py --action=delete
+```
+
+### Start streamlit web app 
+```python
+streamlit run app.py --server.port=5555
 ```
