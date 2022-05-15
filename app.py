@@ -57,6 +57,12 @@ if image:
             st.header('Results')
             st.dataframe(k_most_similar_df.reset_index(drop=True))
 
+            family_results = k_most_similar_df['family'].value_counts()
+
+            st.text('Cats: {}'.format(family_results['cat'] if 'cat' in family_results.index else 0))
+            st.text('Dogs: {}'.format(family_results['dog'] if 'dog' in family_results.index else 0))
+
+            st.subheader('Images')
             for filename in k_most_similar_df['filename']:
                 st.text(filename)
                 pil_image = PIL.Image.open(path.join('data/images', filename))

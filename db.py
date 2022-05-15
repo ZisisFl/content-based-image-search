@@ -3,7 +3,7 @@ import argparse
 from dotenv import load_dotenv
 from os import getenv
 from sqlalchemy import create_engine, MetaData, Table, Column, insert
-from sqlalchemy.dialects.postgresql import TEXT, INTEGER, BYTEA
+from sqlalchemy.dialects.postgresql import VARCHAR, INTEGER, BYTEA
 from pandas import read_sql
 
 from feature_generator import create_pet_images_batch
@@ -40,9 +40,9 @@ class PostgresHandler:
                             metadata,
                             Column('id', INTEGER, primary_key=True),
                             Column('feature_vector', BYTEA),
-                            Column('family', TEXT),
-                            Column('breed', TEXT),
-                            Column('filename', TEXT)
+                            Column('family', VARCHAR(3)),
+                            Column('breed', VARCHAR),
+                            Column('filename', VARCHAR)
                             )
         
         # if table doesn't exist then create it else nothing due to checkfirst 

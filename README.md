@@ -1,4 +1,4 @@
-# Content-based image search
+# Content-based image retrieval
 This is a simple project that implements a content-based image retrieval engine using PostgreSQL as storage backend and Python for the application logic.
 
 ## Dataset
@@ -40,7 +40,7 @@ Follow the steps described in the next sections to setup and start the applicati
 
 ### Setting up PostgreSQL database
 
-1. Execute the following command to create `pet_images` table that will host links to pet image files metadata and feature vectors:
+1. Execute the following command to create `pet_images` table that will host links to pet image files, metadata and feature vectors:
     ```python
     python db.py --action=create
     ```
@@ -54,7 +54,11 @@ Follow the steps described in the next sections to setup and start the applicati
 python db.py --action=delete
 ```
 
-### Start streamlit web app 
+### Start streamlit web app
+In order to start the Python web application activate the Python virtual environment as described in section Requirements and execute the following command 
 ```python
 streamlit run app.py --server.port=5555
 ```
+
+Application will open up in broswer
+![app_preview_image](/assets/app_preview.png)

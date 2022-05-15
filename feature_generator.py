@@ -39,13 +39,13 @@ class PetImage:
         return '_'.join(image_filename.lower().split('/')[-1].split('_')[:-1])
     
 
-    def extract_feature_vector(self, image, vector_size=32):
+    def extract_feature_vector(self, image, vector_size=16):
         try:
             alg = cv2.SIFT_create()
             # Dinding image keypoints
             kps = alg.detect(image)
 
-            # Getting first 32 of them. 
+            # Getting first vector_size of them. 
             # Number of keypoints is varies depend on image size and color pallet
             # Sorting them based on keypoint response value(bigger is better)
             kps = sorted(kps, key=lambda x: -x.response)[:vector_size]
@@ -59,7 +59,7 @@ class PetImage:
             # Descriptor vector size is 128
             needed_size = (vector_size * 128)
             if dsc.size < needed_size:
-                # if we have less the 32 descriptors then just adding zeros at the
+                # if we have less the vector_size descriptors then just adding zeros at the
                 # end of our feature vector
                 dsc = np.concatenate([dsc, np.zeros(needed_size - dsc.size)])
         except Exception as e:
