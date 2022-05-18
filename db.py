@@ -6,8 +6,6 @@ from sqlalchemy import create_engine, MetaData, Table, Column, insert
 from sqlalchemy.dialects.postgresql import VARCHAR, INTEGER, BYTEA
 from pandas import read_sql
 
-from feature_generator import create_pet_images_batch
-
 
 class PostgresHandler:
     """ Handler for connection with PostgreSQL backend database
@@ -55,6 +53,7 @@ class PostgresHandler:
     
 
     def ingest_images(self):
+        from feature_generator import create_pet_images_batch
         # create batch of pet images to store in database
         pet_images = create_pet_images_batch()
 

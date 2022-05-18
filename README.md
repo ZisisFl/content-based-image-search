@@ -19,7 +19,7 @@ Install base required python packages
 pip install -r base_requirements.txt
 ```
 
-File `base_requirements.txt` contains all packages you need to install for this project except tensorflow related ones. This is because this project was developed in a Apple M1 machine and requires different process for install tensorflow.
+File `base_requirements.txt` contains all packages you need to install for this project except tensorflow related ones. This is because this project was developed in a Apple M1 machine and requires a different process to install tensorflow.
 
 For Apple M1 do the following:
 ```sh
