@@ -1,4 +1,4 @@
-This is a simple project that implements a content-based image retrieval engine using PostgreSQL as storage backend and Python for the application logic. PostgreSQL database contains a sample of images metadata extracted from cat and dogs images of [Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/) dataset. 
+This is a simple project that implements a content-based image retrieval engine using PostgreSQL as storage backend and Python for the application logic. PostgreSQL database contains a sample of images metadata extracted from cat and dogs images of [Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/) dataset. The features of images are extracted using [VGG16](https://www.tensorflow.org/api_docs/python/tf/keras/applications/vgg16/VGG16) pretrained network.
 
 With this application you can upload your own image and search for similar images contained in the PostgreSQL database. To do so you have to provide number K of nearest neighbor images to retrieve and the distance metric to use for the ranking.
 
