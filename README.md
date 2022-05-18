@@ -1,5 +1,5 @@
 # Content-based image retrieval
-This is a simple project that implements a content-based image retrieval engine using PostgreSQL as storage backend and Python for the application logic.
+This is a simple project that implements a content-based image retrieval engine using PostgreSQL as storage backend and Python for the application logic. It uses [VGG16](https://www.tensorflow.org/api_docs/python/tf/keras/applications/vgg16/VGG16) to extract features from images.
 
 ## Dataset
 You can find the original (Oxford-IIIT Pet Dataset) dataset used in this project in the following [link](https://www.robots.ox.ac.uk/~vgg/data/pets/). This dataset consists of roughly 7000 dog and cat images annotated with their respective breeds.
@@ -14,9 +14,23 @@ conda create --name image_search_env python=3.8
 conda activate image_search_env
 ```
 
-Install required python packages
+Install base required python packages
 ```sh
-pip install -r requirements.txt
+pip install -r base_requirements.txt
+```
+
+File `base_requirements.txt` contains all packages you need to install for this project except tensorflow related ones. This is because this project was developed in a Apple M1 machine and requires different process for install tensorflow.
+
+For Apple M1 do the following:
+```sh
+conda install -c apple tensorflow-deps
+pip install tensorflow-macos
+pip install tensorflow-metal
+```
+
+In other systems the following command should be enough (haven't tried tho):
+```sh
+pip install tensorflow
 ```
 
 ### PostgreSQL

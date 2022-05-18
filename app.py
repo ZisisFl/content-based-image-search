@@ -1,6 +1,7 @@
 import streamlit as st
 import PIL
 from os import path
+
 from image_retrieval import QueryImage
 from db import PostgresHandler
 from image_retrieval import retrieve_k_most_similar_images

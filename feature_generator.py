@@ -1,17 +1,25 @@
-import cv2
 import numpy as np
 import pickle
 from tqdm import tqdm
 from os import path
 from matplotlib import pyplot as plt
+from PIL import Image
+from tensorflow.keras.utils import img_to_array
+from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
+from tensorflow.keras.models import Model
+
 from images_sampling import take_image_files_sample
 
+print('Loading VGG model')
+base_model = VGG16(weights='imagenet')
+model = Model(inputs=base_model.input, outputs=base_model.get_layer('fc1').output)
+print('Loaded VGG model')
 
 class PetImage:
     
     def __init__(self, filename) -> None:
-        self.image_in_opencv_format = cv2.imread(filename)
-        self.feature_vector = self.extract_feature_vector(self.image_in_opencv_format)
+        self.image_in_pil_format = Image.open(filename)
+        self.feature_vector = self.extract_feature_vector(self.image_in_pil_format)
         self.family = self.extract_pet_family(filename)
         self.breed = self.extract_pet_breed(filename)
         self.filename = path.split(filename)[1]
@@ -39,34 +47,27 @@ class PetImage:
         return '_'.join(image_filename.lower().split('/')[-1].split('_')[:-1])
     
 
-    def extract_feature_vector(self, image, vector_size=16):
+    def extract_feature_vector(self, image):
         try:
-            alg = cv2.SIFT_create()
-            # Dinding image keypoints
-            kps = alg.detect(image)
+            # VGG must take a 224x224 img as an input
+            image = image.resize((224, 224))
+            image = image.convert('RGB')
 
-            # Getting first vector_size of them. 
-            # Number of keypoints is varies depend on image size and color pallet
-            # Sorting them based on keypoint response value(bigger is better)
-            kps = sorted(kps, key=lambda x: -x.response)[:vector_size]
-            
-            # computing descriptors vector
-            kps, dsc = alg.compute(image, kps)
+            # To np.array. Height x Width x Channel. dtype=float32
+            x = img_to_array(image)
 
-            # Flatten all of them in one big vector - our feature vector
-            dsc = dsc.flatten()
-            # Making descriptor of same size
-            # Descriptor vector size is 128
-            needed_size = (vector_size * 128)
-            if dsc.size < needed_size:
-                # if we have less the vector_size descriptors then just adding zeros at the
-                # end of our feature vector
-                dsc = np.concatenate([dsc, np.zeros(needed_size - dsc.size)])
+            # (H, W, C)->(1, H, W, C), where the first elem is the number of img
+            x = np.expand_dims(x, axis=0)
+
+            # Subtracting avg values for each pixel
+            x = preprocess_input(x)  
+
+            feature = model.predict(x)[0]  # (1, 4096) -> (4096, )
         except Exception as e:
             print(f'Could not extract features from image due to error: {e}')
             return None
-
-        return dsc
+            
+        return feature / np.linalg.norm(feature)  # Normalize
     
 
     def to_dict(self):
@@ -77,7 +78,7 @@ class PetImage:
     
 
     def show_image(self):
-        plt.imshow(self.image_in_opencv_format)
+        plt.imshow(self.image_in_pil_format)
         plt.show()
 
 

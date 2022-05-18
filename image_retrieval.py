@@ -1,24 +1,20 @@
 import pandas as pd
-import cv2
 import PIL
 import argparse
 import numpy as np
 from os import path
+from scipy.spatial.distance import euclidean, cityblock, minkowski, chebyshev, cosine, canberra, jaccard
+
 from db import PostgresHandler
 from feature_generator import PetImage
-#https://docs.scipy.org/doc/scipy/reference/spatial.distance.html
-from scipy.spatial.distance import euclidean, cityblock, minkowski, chebyshev, cosine, canberra, jaccard
 
 
 class QueryImage:
     def __init__(self, pil_image, filename) -> None:
-        self.image_in_opencv_format = self.transform_PIL_to_openCV(pil_image)
-        self.feature_vector = PetImage.extract_feature_vector(self, self.image_in_opencv_format)
+        self.image_in_pil_format = pil_image
+        self.feature_vector = PetImage.extract_feature_vector(self, self.image_in_pil_format)
         self.filename = filename
-        
 
-    def transform_PIL_to_openCV(self, pil_image):
-        return cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
     
     def to_dict(self):
         return {'feature_vector': self.feature_vector,
