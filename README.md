@@ -74,5 +74,4 @@ In order to start the Python web application activate the Python virtual environ
 streamlit run app.py --server.port=5555
 ```
 
-Application will open up in broswer
-![app_preview_image](/assets/app_preview.png)
+![app_demo_gif](/assets/app_demo.gif)
