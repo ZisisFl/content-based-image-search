@@ -6,7 +6,7 @@ You can find the original (Oxford-IIIT Pet Dataset) dataset used in this project
 
 ## Requirments
 ### Python 
-You will need to create a Python virtual environment and install the packages found in requirements.txt file.
+You will need to create a Python virtual environment and install the packages found in base_requirements.txt file.
 
 Create and activate Python virtual env using anaconda
 ```sh
